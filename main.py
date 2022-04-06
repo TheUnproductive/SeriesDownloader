@@ -3,7 +3,7 @@ import os, argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-in", action="store", dest="file", type=str, default="videos.txt")
 parser.add_argument("-n", action="store", dest="name", type=str, required=True)
-parser.add_argument("-s", action="store", dest="season", type=int, required=True)
+parser.add_argument("-s", action="store", dest="season", type=int, default=1)
 parser.add_argument("-e", action="store", dest="episode", type=int, default=1)
 parser.add_argument("-t", action="store", dest="filetype", type=str, default="mkv")
 parser.add_argument("-v", action=argparse.BooleanOptionalAction, dest="boolean", default=False)

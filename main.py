@@ -24,7 +24,7 @@ if not os.path.isdir(name):
     if season < 10: season_str = "0" + str(season)
     else: season_str = str(season)
     os.mkdir(name)
-    os.mkdir(name + "/Season " + season_str)
+    os.mkdir("%s/Season %s" %(name, season_str))
 
 for link in links_in:
     if "/--/" in link: pass
@@ -34,7 +34,7 @@ for link in links_in:
             episode = episode + 1
         else:
             try:
-                os.system("youtube-dl -o download/master" + ending + verbose + " " + link)
+                os.system("youtube-dl -o download/master%s %s %s" % (ending, verbose, link))
                 if season < 10: season_str = "0" + str(season)
                 else: season_str = str(season)
                 if episode < 10: episode_str = "0" + str(episode)

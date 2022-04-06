@@ -45,7 +45,7 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
                     if loader == "yt-dlp": os.rename("download/master" + ending + ".webm", "download/master" + ending)
                     episode_name = name + " s" + season_str + "e" + episode_str + ending
                     os.rename("download/master" + ending, name + "/Season " + season_str + "/" + episode_name)
-                    print("[info] Downloaded Episode %s" % (episode_name))
+                    print("\x1b[6;30;42m Success Downloaded Episode %s \x1b[0m" % (episode_name))
                     episode = episode + 1
                 except:
                     print("Error fetching m3u8 info")

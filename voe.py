@@ -11,6 +11,14 @@ parser.add_argument("-v", action=argparse.BooleanOptionalAction, dest="boolean",
 parser.add_argument("-d", action="store", dest="loader", type=str, default="youtube-dl")
 args = parser.parse_args()
 
+name = args.name
+season = args.season
+episode = args.episode
+ending = "." + args.filetype
+if args.boolean: verbose = " --verbose"
+else: verbose = ""
+loader = args.loader
+
 def link_download(name, season, episode, ending, verbose, link, loader):
     try:
         cmd = "curl -o data.txt " + link
@@ -89,13 +97,6 @@ def file_download(name, season, episode, ending, verbose, file, loader):
 
     links_in.close()
 
-name = args.name
-season = args.season
-episode = args.episode
-ending = "." + args.filetype
-if args.boolean: verbose = " --verbose"
-else: verbose = ""
-loader = args.loader
 if args.file:
     file1 = args.file
     file_download(name, season, episode, ending, verbose, file1)

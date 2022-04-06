@@ -45,7 +45,7 @@ def link_download(name, season, episode, ending, verbose, link, loader):
                 os.rename("download/master" + ending, name + "/Season " + season_str + "/" + name + " s" + season_str + "e" + episode_str + ending)
                 episode = episode + 1
     except:
-        print("Error fetching m3u8 info")
+        print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
         if data_file:
             data_file.close()
             os.remove("data.txt")
@@ -53,7 +53,7 @@ def link_download(name, season, episode, ending, verbose, link, loader):
 
 def file_download(name, season, episode, ending, verbose, file, loader):
     links_in = open(file, "r")
-    print("It is advised to only load one season at a time")
+    print("\x1b[0;30;43m" + "It is advised to only load one season at a time\x1b[0m")
 
     if not os.path.isdir(name):
         if season < 10:
@@ -62,6 +62,7 @@ def file_download(name, season, episode, ending, verbose, file, loader):
             season_str = str(season)
         os.mkdir(name)
         os.mkdir(name + "/Season " + season_str)
+        print("\x1b[6;30;42m" + "Created folder %s/Season %s \x1b[0m" % (name, season_str))
 
     for link in links_in:
         try:
@@ -89,7 +90,7 @@ def file_download(name, season, episode, ending, verbose, file, loader):
                     os.rename("download/master" + ending, name + "/Season " + season_str + "/" + name + " s" + season_str + "e" + episode_str + ending)
                     episode = episode + 1
         except:
-            print("Error fetching m3u8 info")
+            print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
             if data_file:
                 data_file.close()
                 os.remove("data.txt")

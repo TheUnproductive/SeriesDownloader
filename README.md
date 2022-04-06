@@ -1,5 +1,8 @@
 # SeriesDownloader
 
+## Dependencies
+This script needs Python 3.10 to run
+
 ## Usage
 Add the links to download to the `videos.txt` file.   
 Execute the `main.py` script and give it the following arguments:

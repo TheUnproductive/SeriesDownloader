@@ -8,9 +8,10 @@ parser.add_argument("-e", action="store", dest="episode", type=int, required=Tru
 parser.add_argument("-t", action="store", dest="filetype", type=str, default="mkv")
 parser.add_argument("-l", action="store", dest="link", type=str)
 parser.add_argument("-v", action=argparse.BooleanOptionalAction, dest="boolean", default=False)
+parser.add_argument("-d", action="store", dest="loader", type=str, default="youtube-dl")
 args = parser.parse_args()
 
-def link_download(name, season, episode, ending, verbose, link):
+def link_download(name, season, episode, ending, verbose, link, loader):
     try:
         cmd = "curl -o data.txt " + link
         os.system(cmd)
@@ -24,7 +25,7 @@ def link_download(name, season, episode, ending, verbose, link):
         print(m3u8_info)
         for item in m3u8_info:
             if "m3u8" in item:
-                os.system("youtube-dl -o download/master" + ending + verbose + " " + item)
+                os.system("%s -o download/master%s %s %s" % (loader, ending, verbose, item))
                 if season < 10:
                     season_str = "0" + str(season)
                 else:
@@ -42,7 +43,7 @@ def link_download(name, season, episode, ending, verbose, link):
             os.remove("data.txt")
         pass
 
-def file_download(name, season, episode, ending, verbose, file):
+def file_download(name, season, episode, ending, verbose, file, loader):
     links_in = open(file, "r")
     print("It is advised to only load one season at a time")
 
@@ -68,7 +69,7 @@ def file_download(name, season, episode, ending, verbose, file):
             print(m3u8_info)
             for item in m3u8_info:
                 if "m3u8" in item:
-                    os.system("youtube-dl -o download/master" + ending + verbose + " " + item)
+                    os.system("%s -o download/master%s %s %s" % (loader, ending, verbose, item))
                     if season < 10:
                         season_str = "0" + str(season)
                     else:
@@ -94,6 +95,7 @@ episode = args.episode
 ending = "." + args.filetype
 if args.boolean: verbose = " --verbose"
 else: verbose = ""
+loader = args.loader
 if args.file:
     file1 = args.file
     file_download(name, season, episode, ending, verbose, file1)

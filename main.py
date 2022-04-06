@@ -42,7 +42,9 @@ for link in links_in:
                 if episode < 10: episode_str = "0" + str(episode)
                 else: episode_str = str(episode)
                 if loader == "yt-dlp": os.rename("download/master" + ending + ".webm", "download/master" + ending)
-                os.rename("download/master" + ending, name + "/Season " + season_str + "/" + name + " s" + season_str + "e" + episode_str + ending)
+                episode_name = name + " s" + season_str + "e" + episode_str + ending
+                os.rename("download/master" + ending, name + "/Season " + season_str + "/" + episode_name)
+                print("[info] Downloaded Episode %s" % (episode_name))
                 episode = episode + 1
             except:
                 print("Error fetching m3u8 info")

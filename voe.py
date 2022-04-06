@@ -99,10 +99,10 @@ def file_download(name, season, episode, ending, verbose, file, loader):
 
 if args.file:
     file1 = args.file
-    file_download(name, season, episode, ending, verbose, file1)
+    file_download(name, season, episode, ending, verbose, file1, loader)
 elif args.link:
     link = args.link
-    link_download(name, season, episode, ending, verbose, link)
+    link_download(name, season, episode, ending, verbose, link, loader)
 else:
     print("Please provide either a file or a link to download from")
     exit()

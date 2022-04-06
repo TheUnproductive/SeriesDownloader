@@ -54,4 +54,5 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
 
     links_in.close()
 
+print("Loader: " + loader)
 downloader(file1, name, season, episode, ending, verbose, loader)

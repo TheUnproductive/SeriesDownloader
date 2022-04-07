@@ -43,6 +43,7 @@ def link_download(name, season, episode, ending, verbose, link, loader):
                 else:
                     episode_str = str(episode)
                 os.rename("download/master" + ending, name + "/Season " + season_str + "/" + name + " s" + season_str + "e" + episode_str + ending)
+                print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
                 episode = episode + 1
     except:
         print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")

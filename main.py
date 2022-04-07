@@ -24,9 +24,10 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
     print("\x1b[0;30;43m" + "It is advised to only load one season at a time\x1b[0m")
 
     if not os.path.isdir(name):
-        if season < 10: season_str = "0" + str(season)
-        else: season_str = str(season)
         os.mkdir(name)
+    if season < 10: season_str = "0" + str(season)
+    else: season_str = str(season)
+    if not os.path.isdir("%s/Season %s" % (name, season_str)):
         os.mkdir("%s/Season %s" %(name, season_str))
         print("\x1b[6;30;42m" + "Created folder %s/Season %s \x1b[0m" % (name, season_str))
 

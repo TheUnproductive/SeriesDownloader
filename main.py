@@ -15,6 +15,7 @@ name = args.name
 season = args.season
 episode = args.episode
 ending = "." + args.filetype
+print(ending)
 if args.boolean: verbose = " --verbose"
 else: verbose = ""
 loader = args.loader

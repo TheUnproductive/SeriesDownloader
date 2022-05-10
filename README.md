@@ -16,3 +16,10 @@ Execute the `main.py` script and give it the following arguments:
 `-d` - Change the downloader to use (eg. youtube-dl [default], yt-dlp)   
    
 The files are now being downloaded into a folder fitting the Plex naming conventions.
+
+## Donations
+
+If you enjoy my work, why not buy me a coffee?      
+[![paypal](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=K5KVUTX6HJHXU)
+
+Of course, if you choose to enjoy it for free, I also appreciate it.

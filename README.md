@@ -17,6 +17,8 @@ Execute the `main.py` script and give it the following arguments:
    
 The files are now being downloaded into a folder fitting the Plex naming conventions.
 
+**!!This project does not endorse piracy!!**
+
 ## Donations
 
 If you enjoy my work, why not buy me a coffee?      

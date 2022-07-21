@@ -61,16 +61,22 @@ def file_download(name, season, episode, ending, verbose, file, loader):
         if "/--/" in link: pass
         else:
             try:
-                        if season < 10:
-                            season_str = "0" + str(season)
-                        else:
-                            season_str = str(season)
-                        if episode < 10:
-                            episode_str = "0" + str(episode)
-                        else:
-                            episode_str = str(episode)
-                        os.rename("download/master" + ending, name + "/Season " + season_str + "/" + name + " s" + season_str + "e" + episode_str + ending)
-                        episode = episode + 1
+                cmd = loader  + " " + link
+                os.system(cmd)
+
+                cmd = "ffmpeg -i 'South Park*S1*.mp4' -i 'South Park*S2*.mp4 -i 'South Park*S3*.mp4' -i 'South Park*S4*.mp4' -filter_complex '[0:v] [0:a] [1:v] [1:a] [2:v] [2:a]concat=n=3:v=1:a=1 [v] [a]' -map '[vv]' -map '[aa]' download/master" + ending
+
+                os.system(cmd)
+                if season < 10:
+                    season_str = "0" + str(season)
+                else:
+                    season_str = str(season)
+                if episode < 10:
+                    episode_str = "0" + str(episode)
+                else:
+                    episode_str = str(episode)
+                os.rename("download/master" + ending, name + "/Season " + season_str + "/" + name + " s" + season_str + "e" + episode_str + ending)
+                episode = episode + 1
             except:
                 print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
                 pass

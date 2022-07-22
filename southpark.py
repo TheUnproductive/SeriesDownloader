@@ -24,7 +24,19 @@ def link_download(name, season, episode, ending, verbose, link, loader):
         cmd = loader  + " " + link
         os.system(cmd)
 
-        cmd = "ffmpeg -i 'South Park*S1*.mp4' -i 'South Park*S2*.mp4 -i 'South Park*S3*.mp4' -i 'South Park*S4*.mp4' -filter_complex '[0:v] [0:a] [1:v] [1:a] [2:v] [2:a]concat=n=3:v=1:a=1 [v] [a]' -map '[vv]' -map '[aa]' download/master" + ending
+        files = os.listdir("./")
+        for file in files:
+            if file.endswith(".mp4"):
+                if "S1" in file:
+                    os.rename(file, "part1.mp4")
+                elif "S2" in file:
+                    os.rename(file, "part2.mp4")
+                elif "S3" in file:
+                    os.rename(file, "part3.mp4")
+                elif "S4" in file:
+                    os.rename(file, "part4.mp4")
+
+        cmd = "ffmpeg -f concat -safe 0 -i 'in.txt' -c copy master" + ending
 
         os.system(cmd)
 
@@ -37,8 +49,9 @@ def link_download(name, season, episode, ending, verbose, link, loader):
         else:
             episode_str = str(episode)
         episode_name = name + " s" + season_str + "e" + episode_str + ending
-        os.rename("download/master" + ending, name + "/Season " + season_str + "/" + episode_name)
+        os.rename("master" + ending, name + "/Season " + season_str + "/" + episode_name)
         print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
+        os.system("rm *.mp4")
         episode = episode + 1
     except:
         print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
@@ -64,9 +77,22 @@ def file_download(name, season, episode, ending, verbose, file, loader):
                 cmd = loader  + " " + link
                 os.system(cmd)
 
-                cmd = "ffmpeg -i 'South Park*S1*.mp4' -i 'South Park*S2*.mp4 -i 'South Park*S3*.mp4' -i 'South Park*S4*.mp4' -filter_complex '[0:v] [0:a] [1:v] [1:a] [2:v] [2:a]concat=n=3:v=1:a=1 [v] [a]' -map '[vv]' -map '[aa]' download/master" + ending
+                files = os.listdir("./")
+                for file in files:
+                    if file.endswith(".mp4"):
+                        if "S1" in file:
+                            os.rename(file, "part1.mp4")
+                        elif "S2" in file:
+                            os.rename(file, "part2.mp4")
+                        elif "S3" in file:
+                            os.rename(file, "part3.mp4")
+                        elif "S4" in file:
+                            os.rename(file, "part4.mp4")
+
+                cmd = "ffmpeg -f concat -safe 0 -i in.txt -c copy master" + ending
 
                 os.system(cmd)
+
                 if season < 10:
                     season_str = "0" + str(season)
                 else:
@@ -75,7 +101,8 @@ def file_download(name, season, episode, ending, verbose, file, loader):
                     episode_str = "0" + str(episode)
                 else:
                     episode_str = str(episode)
-                os.rename("download/master" + ending, name + "/Season " + season_str + "/" + name + " s" + season_str + "e" + episode_str + ending)
+                os.rename("master" + ending, name + "/Season " + season_str + "/" + name + " s" + season_str + "e" + episode_str + ending)
+                os.system("rm *.mp4")
                 episode = episode + 1
             except:
                 print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")

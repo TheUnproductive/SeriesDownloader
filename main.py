@@ -39,6 +39,10 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
                 if verbose == "": os.system('python3.10 voe.py -n "%s" -s %s -e %s -l %s -d %s' % (name, season, episode, link, loader))
                 else: os.system('python3.10 voe.py -n "%s" -s %s -e %s -l %s -d %s -v' % (name, season, episode, link, loader))
                 episode = episode + 1
+            elif "www.southpark" in link:
+                if verbose == "": os.system('python3.10 southpark.py -n "%s" -s %s -e %s -l %s -d %s' % (name, season, episode, link, loader))
+                else: os.system('python3.10 southpark.py -n "%s" -s %s -e %s -l %s -d %s -v' % (name, season, episode, link, loader))
+                episode = episode + 1
             else:
                 try:
                     os.system("%s -o download/master%s %s %s" % (loader, ending, verbose, link))

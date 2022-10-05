@@ -15,7 +15,6 @@ name = args.name
 season = args.season
 episode = args.episode
 ending = "." + args.filetype
-print(ending)
 if args.boolean: verbose = " --verbose"
 else: verbose = ""
 loader = args.loader
@@ -42,6 +41,12 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
                 os.system(cmd)
                 if verbose == "": os.system('python3 voe.py -n "%s" -s %s -e %s -l %s -d %s' % (name, season, episode, link, loader))
                 else: os.system('python3 voe.py -n "%s" -s %s -e %s -l %s -d %s -v' % (name, season, episode, link, loader))
+                # if verbose == "": os.system('python3.10 voe.py -n "%s" -s %s -e %s -l %s -d %s' % (name, season, episode, link, loader))
+                #else: os.system('python3.10 voe.py -n "%s" -s %s -e %s -l %s -d %s -v' % (name, season, episode, link, loader))
+                episode = episode + 1
+            elif "www.southpark" in link:
+                if verbose == "": os.system('python3.10 southpark.py -n "%s" -s %s -e %s -l %s -d %s' % (name, season, episode, link, loader))
+                else: os.system('python3.10 southpark.py -n "%s" -s %s -e %s -l %s -d %s -v' % (name, season, episode, link, loader))
                 episode = episode + 1
             else:
                 try:
@@ -70,5 +75,6 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
 
     links_in.close()
 
+print("\x1b[1;32;40m" + "File Type: " + ending + '\x1b[0m')
 print("\x1b[1;32;40m" + "Loader: " + loader + '\x1b[0m')
 downloader(file1, name, season, episode, ending, verbose, loader)

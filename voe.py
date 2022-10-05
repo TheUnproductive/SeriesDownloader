@@ -18,6 +18,9 @@ ending = "." + args.filetype
 if args.boolean: verbose = " --verbose"
 else: verbose = ""
 loader = args.loader
+link = args.link
+
+print(link)
 
 def link_download(name, season, episode, ending, verbose, link, loader):
     try:
@@ -97,7 +100,7 @@ def file_download(name, season, episode, ending, verbose, file, loader):
                 print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
                 if data_file:
                     data_file.close()
-                    os.remove("data.txt")
+                    #os.remove("data.txt")
                 pass
 
     links_in.close()

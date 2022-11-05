@@ -70,6 +70,14 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
                     else:
                         episode = episode + 1
                 except:
+                    if season < 10: season_str = "0" + str(season)
+                    else: season_str = str(season)
+                    if episode < 10: episode_str = "0" + str(episode)
+                    else: episode_str = str(episode)
+                    if loader == "yt-dlp": os.rename("download/master" + ending, "download/master" + ending)
+                    episode_name = name + " s" + season_str + "e" + episode_str + ending
+                    os.rename("download/master" + ending, name + "/Season " + season_str + "/" + episode_name)
+                    print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
                     print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
                     if episode == season_num["episodes"]:
                         episode = 1

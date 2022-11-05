@@ -1,4 +1,4 @@
-import os, argparse
+import os, argparse, re
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-in", action="store", dest="file", type=str)
@@ -18,6 +18,9 @@ ending = "." + args.filetype
 if args.boolean: verbose = " --verbose"
 else: verbose = ""
 loader = args.loader
+link = args.link
+
+print(link)
 
 def link_download(name, season, episode, ending, verbose, link, loader):
     try:
@@ -26,14 +29,16 @@ def link_download(name, season, episode, ending, verbose, link, loader):
         data_file = open("data.txt", "r")
         for line in data_file:
             if "m3u8" in line:
-                m3u8_info = line.split('"')
+                m3u8_info = line.split("'")
                 data_file.close()
                 os.remove("data.txt")
                 break
         print(m3u8_info)
         for item in m3u8_info:
             if "m3u8" in item:
-                os.system("%s -o download/master%s %s %s" % (loader, ending, verbose, item))
+                item = re.search("(?P<url>https?://[^\s]+)", item).group("url")
+                print(item)
+                os.system('%s -o download/master%s %s "%s"' % (loader, ending, verbose, item))
                 if season < 10:
                     season_str = "0" + str(season)
                 else:
@@ -97,7 +102,7 @@ def file_download(name, season, episode, ending, verbose, file, loader):
                 print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
                 if data_file:
                     data_file.close()
-                    os.remove("data.txt")
+                    #os.remove("data.txt")
                 pass
 
     links_in.close()

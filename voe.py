@@ -1,4 +1,4 @@
-import os, argparse
+import os, argparse, re
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-in", action="store", dest="file", type=str)
@@ -29,14 +29,16 @@ def link_download(name, season, episode, ending, verbose, link, loader):
         data_file = open("data.txt", "r")
         for line in data_file:
             if "m3u8" in line:
-                m3u8_info = line.split('"')
+                m3u8_info = line.split("'")
                 data_file.close()
                 os.remove("data.txt")
                 break
         print(m3u8_info)
         for item in m3u8_info:
             if "m3u8" in item:
-                os.system("%s -o download/master%s %s %s" % (loader, ending, verbose, item))
+                item = re.search("(?P<url>https?://[^\s]+)", item).group("url")
+                print(item)
+                os.system('%s -o download/master%s %s "%s"' % (loader, ending, verbose, item))
                 if season < 10:
                     season_str = "0" + str(season)
                 else:

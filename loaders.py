@@ -1,4 +1,4 @@
-import os
+import os, re
 
 class loaders:
     def __init__(self, name, ending, loader, link="0", file="0", season=1, episode=1, verbose=""):
@@ -33,7 +33,7 @@ class loaders:
         links_in.close()
     
     def loader(self):
-            os.system(".\%s -o download/master%s %s %s" % (self.loader, self.ending, self.verbose, self.link))
+            os.system('.\%s -o download/master%s %s "%s"' % (self.loader, self.ending, self.verbose, self.link))
             if int(self.season) < 10: season_str = "0" + str(self.season)
             else: season_str = str(self.season)
             if int(self.episode) < 10: episode_str = "0" + str(self.episode)
@@ -62,7 +62,7 @@ class voe(loaders):
             print(m3u8_info)
             for item in m3u8_info:
                 if "m3u8" in item:
-                    self.link = item.split("?", 1)[0]
+                    self.link = re.search("(?P<url>https?://[^\s]+)", item).group("url")
                     print(self.link)
                     print("Loading...")
                     loaders.loader(self)

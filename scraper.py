@@ -11,18 +11,27 @@ class scraper:
 
     def search(self):
         self.search = self.tv.search(self.search_name)
-
+        self.season_list = []
         for result in self.search:
             if result.name == self.search_name:
                 print(result)
                 id = result.id
                 season = Season()
-                self.season_list = []
                 for i in range(99):
                     try:
                         episodes = len(season.details(id, i).episodes)
-                        self.season_list.append([i, episodes])
+                        self.season_list.append({"season":i, "episodes":episodes})
+                        #print(self.season_list)
                     except:
-                        break
+                        if i == 0:
+                            self.season_list.append({"season":0, "episodes":0})
+                            pass
+                        else:
+                            break
                 break
+        if self.season_list == []:
+            self.season_list.append({"season":0, "episodes":99})   
+            self.season_list.append({"season":1, "episodes":99})             
         return self.season_list
+
+#scraper("American Crime Story")

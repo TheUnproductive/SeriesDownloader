@@ -1,4 +1,4 @@
-import os, argparse
+import os, argparse, scraper, loaders
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-in", action="store", dest="file", type=str, default="videos.txt")
@@ -23,6 +23,12 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
     links_in = open(file1, "r")
     print("\x1b[0;30;43m" + "It is advised to only load one season at a time\x1b[0m")
 
+    metadata = scraper.scraper(name)
+    episode_overview = metadata.search()
+    print(episode_overview)
+
+    season_num = episode_overview[season]
+
     if not os.path.isdir(name):
         os.mkdir(name)
     if season < 10: season_str = "0" + str(season)
@@ -36,28 +42,42 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
         else:
             if "/voe/" in link:
                 link = link.replace("/voe/", "")
-                if verbose == "": os.system('python3.10 voe.py -n "%s" -s %s -e %s -l %s -d %s' % (name, season, episode, link, loader))
-                else: os.system('python3.10 voe.py -n "%s" -s %s -e %s -l %s -d %s -v' % (name, season, episode, link, loader))
-                episode = episode + 1
+                loaders.voe(name, ending, loader, link, season, episode, verbose).link_download()
+                if episode == season_num["episodes"]:
+                        episode = 1
+                        season = season + 1
+                        os.mkdir("%s/Season %s" %(name, season_str))
+                        season_num = episode_overview[season]
+                else:
+                    episode = episode + 1
             elif "www.southpark" in link:
-                if verbose == "": os.system('python3.10 southpark.py -n "%s" -s %s -e %s -l %s -d %s' % (name, season, episode, link, loader))
-                else: os.system('python3.10 southpark.py -n "%s" -s %s -e %s -l %s -d %s -v' % (name, season, episode, link, loader))
-                episode = episode + 1
+                loaders.southpark(name, ending, loader, link, season, episode, verbose).link_download()
+                if episode == season_num["episodes"]:
+                        episode = 1
+                        season = season + 1
+                        os.mkdir("%s/Season %s" %(name, season_str))
+                        season_num = episode_overview[season]
+                else:
+                    episode = episode + 1
             else:
                 try:
-                    os.system("%s -o download/master%s %s %s" % (loader, ending, verbose, link))
-                    if season < 10: season_str = "0" + str(season)
-                    else: season_str = str(season)
-                    if episode < 10: episode_str = "0" + str(episode)
-                    else: episode_str = str(episode)
-                    if loader == "yt-dlp": os.rename("download/master" + ending + ".webm", "download/master" + ending)
-                    episode_name = name + " s" + season_str + "e" + episode_str + ending
-                    os.rename("download/master" + ending, name + "/Season " + season_str + "/" + episode_name)
-                    print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
-                    episode = episode + 1
+                    loaders.loaders(name, ending, loader, link, season, episode, verbose).loader()
+                    if episode == season_num["episodes"]:
+                        episode = 1
+                        season = season + 1
+                        os.mkdir("%s/Season %s" %(name, season_str))
+                        season_num = episode_overview[season]
+                    else:
+                        episode = episode + 1
                 except:
                     print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
-                    episode = episode + 1
+                    if episode == season_num["episodes"]:
+                        episode = 1
+                        season = season + 1
+                        os.mkdir("%s/Season %s" %(name, season_str))
+                        season_num = episode_overview[season]
+                    else:
+                        episode = episode + 1
                     pass
 
     links_in.close()

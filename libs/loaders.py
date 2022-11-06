@@ -17,7 +17,7 @@ class loaders:
         links_in = open(self.file, "r")
         print("\x1b[0;30;43m" + "It is advised to only load one season at a time\x1b[0m")
 
-        if not os.path.isdir(name):
+        if not os.path.isdir(self.name):
             if self.season < 10:
                 season_str = "0" + str(self.season)
             else:
@@ -46,15 +46,15 @@ class loaders:
 class voe(loaders):
     def set_episode(self, episode):
         self.episode = episode
-        print(self.episode)
+        #print(self.episode)
 
     def set_link(self, link):
         self.link = link
-        print(self.link)
+        #print(self.link)
 
     def set_season(self, season):
         self.season = season
-        print(self.season)
+        #print(self.season)
 
     def link_download(self):
         try:
@@ -71,11 +71,11 @@ class voe(loaders):
                     data_file.close()
                     os.remove("data.txt")
                     break
-            print(m3u8_info)
+            #print(m3u8_info)
             for item in m3u8_info:
                 if "m3u8" in item:
                     self.link = re.search("(?P<url>https?://[^\s]+)", item).group("url")
-                    print(self.link)
+                    #print(self.link)
                     print("Loading...")
                     loaders.loader(self)
                     print("Loaded!")

@@ -1,4 +1,6 @@
-import os, argparse, scraper, loaders
+import os, argparse
+import libs.loaders as loaders
+#import libs.scraper as scraper
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-in", action="store", dest="file", type=str, default="videos.txt")

@@ -23,11 +23,11 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
     links_in = open(file1, "r")
     print("\x1b[0;30;43m" + "It is advised to only load one season at a time\x1b[0m")
 
-    metadata = scraper.scraper(name)
-    episode_overview = metadata.search()
-    print(episode_overview)
+    #metadata = scraper.scraper(name)
+    #episode_overview = metadata.search()
+    #print(episode_overview)
 
-    season_num = episode_overview[season]
+    #season_num = episode_overview[season]
 
     if not os.path.isdir(name):
         os.mkdir(name)
@@ -37,19 +37,19 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
         os.mkdir("%s/Season %s" %(name, season_str))
         print("\x1b[6;30;42m" + "Created folder %s/Season %s \x1b[0m" % (name, season_str))
 
+    voe = loaders.voe(name, ending, loader, season, verbose)
+
     for link in links_in:
         if "/--/" in link: pass
         else:
             if "/voe/" in link:
                 link = link.replace("/voe/", "")
-                loaders.voe(name, ending, loader, link, season, episode, verbose).link_download()
-                if episode == season_num["episodes"]:
-                        episode = 1
-                        season = season + 1
-                        os.mkdir("%s/Season %s" %(name, season_str))
-                        season_num = episode_overview[season]
-                else:
-                    episode = episode + 1
+                print(episode)
+                voe.set_link(link)
+                voe.set_season(season)
+                voe.set_episode(episode)
+                voe.link_download()
+                episode = episode + 1
             elif "www.southpark" in link:
                 loaders.southpark(name, ending, loader, link, season, episode, verbose).link_download()
                 if episode == season_num["episodes"]:

@@ -38,12 +38,24 @@ class loaders:
             else: season_str = str(self.season)
             if int(self.episode) < 10: episode_str = "0" + str(self.episode)
             else: episode_str = str(self.episode)
-            if self.loader == "yt-dlp": os.rename("download/master" + self.ending + ".webm", "download/master" + self.ending)
+            if self.loader == "yt-dlp": os.rename("download/master" + self.ending, "download/master" + self.ending)
             episode_name = self.name + " s" + season_str + "e" + episode_str + self.ending
-            os.rename("download/master" + ending, name + "/Season " + season_str + "/" + episode_name)
+            os.rename("download/master" + self.ending, self.name + "/Season " + season_str + "/" + episode_name)
             print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
 
 class voe(loaders):
+    def set_episode(self, episode):
+        self.episode = episode
+        print(self.episode)
+
+    def set_link(self, link):
+        self.link = link
+        print(self.link)
+
+    def set_season(self, season):
+        self.season = season
+        print(self.season)
+
     def link_download(self):
         try:
             cmd = "curl -o data.txt " + self.link
@@ -73,6 +85,8 @@ class voe(loaders):
                 data_file.close()
                 os.remove("data.txt")
             pass
+    def loader(self):
+        loaders.loader(self)
 
 class southpark(loaders):
     def link_download(self):

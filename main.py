@@ -25,7 +25,7 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
     links_in = open(file1, "r")
     print("\x1b[0;30;43m" + "It is advised to only load one season at a time\x1b[0m")
 
-    if "/meta/" in file1:
+    #if "/meta/" in file1:
 
 
     metadata = scraper.scraper(name)
@@ -53,7 +53,13 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
                 voe.set_season(season)
                 voe.set_episode(episode)
                 voe.link_download()
-                episode = episode + 1
+                if episode == season_num["episodes"]:
+                        episode = 1
+                        season = season + 1
+                        os.mkdir("%s/Season %s" %(name, season_str))
+                        season_num = episode_overview[season]
+                else:
+                    episode = episode + 1
             elif "www.southpark" in link:
                 loaders.southpark(name, ending, loader, link, season, episode, verbose).link_download()
                 if episode == season_num["episodes"]:
@@ -66,13 +72,6 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
             else:
                 try:
                     loaders.loaders(name, ending, loader, link, season, episode, verbose).loader()
-                    if episode == season_num["episodes"]:
-                        episode = 1
-                        season = season + 1
-                        os.mkdir("%s/Season %s" %(name, season_str))
-                        season_num = episode_overview[season]
-                    else:
-                        episode = episode + 1
                     if season < 10: season_str = "0" + str(season)
                     else: season_str = str(season)
                     if episode < 10: episode_str = "0" + str(episode)

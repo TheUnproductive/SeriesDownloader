@@ -89,6 +89,18 @@ class voe(loaders):
         loaders.loader(self)
 
 class southpark(loaders):
+    def set_episode(self, episode):
+        self.episode = episode
+        #print(self.episode)
+        
+    def set_link(self, link):
+        self.link = link
+        #print(self.link)
+
+    def set_season(self, season):
+        self.season = season
+        #print(self.season)
+
     def link_download(self):
         try:
             cmd = self.loader  + " " + self.link

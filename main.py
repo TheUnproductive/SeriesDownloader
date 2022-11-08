@@ -25,9 +25,6 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
     links_in = open(file1, "r")
     print("\x1b[0;30;43m" + "It is advised to only load one season at a time\x1b[0m")
 
-    #if "/meta/" in file1:
-
-
     metadata = scraper.scraper(name)
     episode_overview = metadata.search()
     print(episode_overview)
@@ -71,7 +68,10 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
                     episode = episode + 1
             else:
                 try:
-                    loaders.loaders(name, ending, loader, link, season, episode, verbose).loader()
+                    print("Hello")
+                    loader = loaders.loaders(name, ending, loader, link, season, episode, verbose)
+                    loader.loader()
+                    print("World")
                     if season < 10: season_str = "0" + str(season)
                     else: season_str = str(season)
                     if episode < 10: episode_str = "0" + str(episode)

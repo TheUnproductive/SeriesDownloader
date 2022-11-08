@@ -12,6 +12,18 @@ class loaders:
         if file == "0": pass
         else: self.file = file
         self.loader = loader
+    
+    def set_episode(self, episode):
+        self.episode = episode
+        #print(self.episode)
+
+    def set_link(self, link):
+        self.link = link
+        #print(self.link)
+
+    def set_season(self, season):
+        self.season = season
+        #print(self.season)
 
     def file_download(self):
         links_in = open(self.file, "r")
@@ -75,7 +87,6 @@ class voe(loaders):
             for item in m3u8_info:
                 if "m3u8" in item:
                     self.link = re.search("(?P<url>https?://[^\s]+)", item).group("url")
-                    #print(self.link)
                     print("Loading...")
                     loaders.loader(self)
                     print("Loaded!")

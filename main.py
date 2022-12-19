@@ -3,8 +3,8 @@ import libs.loaders as loaders
 import libs.scraper as scraper
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-in", action="store", dest="file", type=str, default="txt/videos.txt")
 parser.add_argument("-n", action="store", dest="name", type=str, required=True)
+parser.add_argument("-in", action="store", dest="file", type=str, default="videos.txt")
 parser.add_argument("-s", action="store", dest="season", type=int, default=1)
 parser.add_argument("-e", action="store", dest="episode", type=int, default=1)
 parser.add_argument("-t", action="store", dest="filetype", type=str, default="mkv")
@@ -74,7 +74,6 @@ def downloader(file, name, season, episode, ending, verbose, driver):
                                 season_num = episode_overview[season]
                     else:
                         episode = episode + 1
-                except:
                     if season < 10: season_str = "0" + str(season)
                     else: season_str = str(season)
                     if episode < 10: episode_str = "0" + str(episode)
@@ -83,6 +82,14 @@ def downloader(file, name, season, episode, ending, verbose, driver):
                     episode_name = name + " s" + season_str + "e" + episode_str + ending
                     os.rename("download/master" + ending, name + "/Season " + season_str + "/" + episode_name)
                     print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
+                    if episode == season_num["episodes"]:
+                        episode = 1
+                        season = season + 1
+                        os.mkdir("%s/Season %s" %(name, season_str))
+                        season_num = episode_overview[season]
+                    else:
+                        episode = episode + 1
+                except:
                     print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
                     if args.scrape:
                         if episode == season_num["episodes"]:

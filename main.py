@@ -39,6 +39,7 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
         print("\x1b[6;30;42m" + "Created folder %s/Season %s \x1b[0m" % (name, season_str))
 
     voe = loaders.voe(name, ending, loader, season, verbose)
+    southpark = loaders.southpark(name, ending, loader, season=season, verbose=verbose)
 
     for link in links_in:
         if "/--/" in link: pass
@@ -58,7 +59,10 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
                 else:
                     episode = episode + 1
             elif "www.southpark" in link:
-                loaders.southpark(name, ending, loader, link, season, episode, verbose).link_download()
+                southpark.set_episode(episode)
+                southpark.set_link(link)
+                southpark.set_season(season)
+                southpark.link_download()
                 if episode == season_num["episodes"]:
                         episode = 1
                         season = season + 1
@@ -68,25 +72,29 @@ def downloader(file1, name, season, episode, ending, verbose, loader):
                     episode = episode + 1
             else:
                 try:
-                    print("Hello")
+                    #print("Hello")
                     loader = loaders.loaders(name, ending, loader, link, season, episode, verbose)
-                    loader.loader()
+                    loader.set_episode(episode)
+                    loader.set_season(season)
+                    loader.set_link(link)
+                    loader.downloader()
                     print("World")
-                    if season < 10: season_str = "0" + str(season)
-                    else: season_str = str(season)
-                    if episode < 10: episode_str = "0" + str(episode)
-                    else: episode_str = str(episode)
-                    if loader == "yt-dlp": os.rename("download/master" + ending, "download/master" + ending)
-                    episode_name = name + " s" + season_str + "e" + episode_str + ending
-                    os.rename("download/master" + ending, name + "/Season " + season_str + "/" + episode_name)
-                    print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
-                    if episode == season_num["episodes"]:
-                        episode = 1
-                        season = season + 1
-                        os.mkdir("%s/Season %s" %(name, season_str))
-                        season_num = episode_overview[season]
-                    else:
-                        episode = episode + 1
+                    #if season < 10: season_str = "0" + str(season)
+                    #else: season_str = str(season)
+                    #if episode < 10: episode_str = "0" + str(episode)
+                    #else: episode_str = str(episode)
+                    #if loader == "yt-dlp": os.rename("download/master" + ending, "download/master" + ending)
+                    #episode_name = name + " s" + season_str + "e" + episode_str + ending
+                    #os.rename("download/master" + ending, name + "/Season " + season_str + "/" + episode_name)
+                    #print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
+                    #if episode == season_num["episodes"]:
+                    #    episode = 1
+                    #    season = season + 1
+                    #    os.mkdir("%s/Season %s" %(name, season_str))
+                    #    season_num = episode_overview[season]
+                    #else:
+                    #    episode = episode + 1
+                    episode = episode + 1
                 except:
                     print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
                     if episode == season_num["episodes"]:

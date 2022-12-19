@@ -44,30 +44,18 @@ class loaders:
                 self.link_download()
         links_in.close()
     
-    def loader(self):
+    def downloader(self):
             os.system('.\%s -o download/master%s %s "%s"' % (self.loader, self.ending, self.verbose, self.link))
             if int(self.season) < 10: season_str = "0" + str(self.season)
             else: season_str = str(self.season)
             if int(self.episode) < 10: episode_str = "0" + str(self.episode)
             else: episode_str = str(self.episode)
-            if self.loader == "yt-dlp": os.rename("download/master" + self.ending, "download/master" + self.ending)
+            #if self.loader == "yt-dlp": os.rename("download/master" + self.ending, "download/master" + self.ending)
             episode_name = self.name + " s" + season_str + "e" + episode_str + self.ending
             os.rename("download/master" + self.ending, self.name + "/Season " + season_str + "/" + episode_name)
             print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
 
 class voe(loaders):
-    def set_episode(self, episode):
-        self.episode = episode
-        #print(self.episode)
-
-    def set_link(self, link):
-        self.link = link
-        #print(self.link)
-
-    def set_season(self, season):
-        self.season = season
-        #print(self.season)
-
     def link_download(self):
         try:
             cmd = "curl -o data.txt " + self.link
@@ -88,7 +76,7 @@ class voe(loaders):
                 if "m3u8" in item:
                     self.link = re.search("(?P<url>https?://[^\s]+)", item).group("url")
                     print("Loading...")
-                    loaders.loader(self)
+                    loaders.downloader(self)
                     print("Loaded!")
         except:
             print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
@@ -96,22 +84,10 @@ class voe(loaders):
                 data_file.close()
                 os.remove("data.txt")
             pass
-    def loader(self):
-        loaders.loader(self)
+    def downloader(self):
+        loaders.downloader(self)
 
 class southpark(loaders):
-    def set_episode(self, episode):
-        self.episode = episode
-        #print(self.episode)
-        
-    def set_link(self, link):
-        self.link = link
-        #print(self.link)
-
-    def set_season(self, season):
-        self.season = season
-        #print(self.season)
-
     def link_download(self):
         try:
             cmd = self.loader  + " " + self.link

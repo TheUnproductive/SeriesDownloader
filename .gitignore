@@ -6,3 +6,5 @@
 *.part
 *.ytdl
 *.mp4
+!clannad.txt
+!avatar.txt

@@ -33,12 +33,12 @@ class loaders:
         links_in.close()
     
     def loader(self):
-            os.system('.\%s -o download/master%s %s "%s"' % (self.loader, self.ending, self.verbose, self.link))
+            os.system('.\%s --downloader ffmpeg --hls-use-mpegts -o download/master%s %s "%s"' % (self.loader, self.ending, self.verbose, self.link))
             if int(self.season) < 10: season_str = "0" + str(self.season)
             else: season_str = str(self.season)
             if int(self.episode) < 10: episode_str = "0" + str(self.episode)
             else: episode_str = str(self.episode)
-            if self.loader == "yt-dlp": os.rename("download/master" + self.ending, "download/master" + self.ending)
+            #if self.loader == "yt-dlp": os.rename("download/master" + self.ending, "download/master" + self.ending)
             episode_name = self.name + " s" + season_str + "e" + episode_str + self.ending
             os.rename("download/master" + self.ending, self.name + "/Season " + season_str + "/" + episode_name)
             print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))

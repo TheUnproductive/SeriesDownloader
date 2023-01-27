@@ -9,7 +9,8 @@ parser.add_argument("-s", action="store", dest="season", type=int, default=1)
 parser.add_argument("-e", action="store", dest="episode", type=int, default=1)
 parser.add_argument("-t", action="store", dest="filetype", type=str, default="mkv")
 parser.add_argument("-v", action=argparse.BooleanOptionalAction, dest="boolean", default=False)
-parser.add_argument("-d", action="store", dest="loader", type=str, default="youtube-dl")
+parser.add_argument("-d", action="store", dest="loader", type=str, default="yt-dlp")
+parser.add_argument("--proxy", action="store", dest="proxy", type=str, default="")
 parser.add_argument("-scrape", action=argparse.BooleanOptionalAction, dest="scrape", default=False)
 args = parser.parse_args()
 
@@ -21,6 +22,8 @@ ending = "." + args.filetype
 if args.boolean: verbose = " --verbose"
 else: verbose = ""
 driver = args.loader
+if args.proxy == "": proxy = ""
+else: proxy = "--proxy " + args.proxy
 
 def downloader(file, name, season, episode, ending, verbose, driver):
     links_in = open(file, "r")
@@ -40,8 +43,8 @@ def downloader(file, name, season, episode, ending, verbose, driver):
         os.mkdir("%s/Season %s" %(name, season_str))
         print("\x1b[6;30;42m" + "Created folder %s/Season %s \x1b[0m" % (name, season_str))
 
-    voe = loaders.voe(name, ending, loader, season, verbose)
-    southpark = loaders.southpark(name, ending, loader, season=season, verbose=verbose)
+    voe = loaders.voe(name, ending, driver, season, verbose)
+    southpark = loaders.southpark(name, ending, driver, season=season, verbose=verbose)
 
     for link in links_in:
         if "/--/" in link: pass
@@ -50,6 +53,7 @@ def downloader(file, name, season, episode, ending, verbose, driver):
                 link = link.replace("/voe/", "")
                 print(episode)
                 voe.set_link(link)
+                voe.set_proxy(proxy)
                 voe.set_season(season)
                 voe.set_episode(episode)
                 voe.link_download()
@@ -57,6 +61,7 @@ def downloader(file, name, season, episode, ending, verbose, driver):
             elif "www.southpark" in link:
                 southpark.set_episode(episode)
                 southpark.set_link(link)
+                southpark.set_proxy(proxy)
                 southpark.set_season(season)
                 southpark.link_download()
                 if episode == season_num["episodes"]:
@@ -69,8 +74,9 @@ def downloader(file, name, season, episode, ending, verbose, driver):
             else:
                 try:
                     #print("Hello")
-                    loader = loaders.loaders(name, ending, loader, link, season, episode, verbose)
+                    loader = loaders.loaders(name, ending, driver, link, season, episode, verbose)
                     loader.set_episode(episode)
+                    loader.set_proxy(proxy)
                     loader.set_season(season)
                     loader.set_link(link)
                     loader.downloader()

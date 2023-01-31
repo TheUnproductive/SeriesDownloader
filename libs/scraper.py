@@ -33,5 +33,3 @@ class scraper:
             self.season_list.append({"season":0, "episodes":99})   
             self.season_list.append({"season":1, "episodes":99})             
         return self.season_list
-
-#scraper("American Crime Story")

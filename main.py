@@ -4,12 +4,12 @@ import libs.scraper as scraper
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", action="store", dest="name", type=str, required=True)
-parser.add_argument("-in", action="store", dest="file", type=str, default="videos.txt")
+parser.add_argument("-in", action="store", dest="file", type=str, default="txt/videos.txt")
 parser.add_argument("-s", action="store", dest="season", type=int, default=1)
 parser.add_argument("-e", action="store", dest="episode", type=int, default=1)
 parser.add_argument("-t", action="store", dest="filetype", type=str, default="mkv")
 parser.add_argument("-v", action=argparse.BooleanOptionalAction, dest="boolean", default=False)
-parser.add_argument("-d", action="store", dest="loader", type=str, default="youtube-dl")
+parser.add_argument("-d", action="store", dest="loader", type=str, default="yt-dlp")
 parser.add_argument("-scrape", action=argparse.BooleanOptionalAction, dest="scrape", default=False)
 args = parser.parse_args()
 
@@ -41,6 +41,7 @@ def downloader(file, name, season, episode, ending, verbose, driver):
         print("\x1b[6;30;42m" + "Created folder %s/Season %s \x1b[0m" % (name, season_str))
 
     voe = loaders.voe(name, ending, driver, season, verbose)
+    southpark = loaders.southpark(name, ending, driver, verbose=verbose)
 
     for link in links_in:
         if "/--/" in link: pass
@@ -54,7 +55,10 @@ def downloader(file, name, season, episode, ending, verbose, driver):
                 voe.link_download()
                 episode = episode + 1
             elif "www.southpark" in link:
-                loaders.southpark(name, ending, driver, link, season, episode, verbose).link_download()
+                southpark.set_link(link)
+                southpark.set_season(season)
+                southpark.set_episode(episode)
+                southpark.link_download()
                 if args.scrape:
                     if episode == season_num["episodes"]:
                             episode = 1

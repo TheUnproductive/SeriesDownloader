@@ -103,7 +103,7 @@ class southpark(loaders):
                     elif "S4" in file:
                         os.rename(file, "part4.mp4")
 
-            cmd = "ffmpeg -f concat -safe 0 -i 'in.txt' -c copy master" + self.ending
+            cmd = "ffmpeg -f concat -safe 0 -i in.txt -c copy master" + self.ending
 
             os.system(cmd)
 

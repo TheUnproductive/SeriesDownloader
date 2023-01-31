@@ -10,6 +10,7 @@ parser.add_argument("-e", action="store", dest="episode", type=int, default=1)
 parser.add_argument("-t", action="store", dest="filetype", type=str, default="mkv")
 parser.add_argument("-v", action=argparse.BooleanOptionalAction, dest="boolean", default=False)
 parser.add_argument("-d", action="store", dest="loader", type=str, default="yt-dlp")
+parser.add_argument("--proxy", action="store", dest="proxy", type=str, default="")
 parser.add_argument("-scrape", action=argparse.BooleanOptionalAction, dest="scrape", default=False)
 args = parser.parse_args()
 
@@ -21,6 +22,8 @@ ending = "." + args.filetype
 if args.boolean: verbose = " --verbose"
 else: verbose = ""
 driver = args.loader
+if args.proxy == "": proxy = ""
+else: proxy = "--proxy " + args.proxy
 
 def downloader(file, name, season, episode, ending, verbose, driver):
     links_in = open(file, "r")
@@ -41,7 +44,7 @@ def downloader(file, name, season, episode, ending, verbose, driver):
         print("\x1b[6;30;42m" + "Created folder %s/Season %s \x1b[0m" % (name, season_str))
 
     voe = loaders.voe(name, ending, driver, season, verbose)
-    southpark = loaders.southpark(name, ending, driver, verbose=verbose)
+    southpark = loaders.southpark(name, ending, driver, season=season, verbose=verbose)
 
     for link in links_in:
         if "/--/" in link: pass
@@ -50,49 +53,34 @@ def downloader(file, name, season, episode, ending, verbose, driver):
                 link = link.replace("/voe/", "")
                 print(episode)
                 voe.set_link(link)
+                voe.set_proxy(proxy)
                 voe.set_season(season)
                 voe.set_episode(episode)
                 voe.link_download()
                 episode = episode + 1
             elif "www.southpark" in link:
-                southpark.set_link(link)
-                southpark.set_season(season)
                 southpark.set_episode(episode)
+                southpark.set_link(link)
+                southpark.set_proxy(proxy)
+                southpark.set_season(season)
                 southpark.link_download()
-                if args.scrape:
-                    if episode == season_num["episodes"]:
-                            episode = 1
-                            season = season + 1
-                            os.mkdir("%s/Season %s" %(name, season_str))
-                            season_num = episode_overview[season]
-                else:
-                    episode = episode + 1
-            else:
-                try:
-                    cmd = "%s %s"%(driver, link)
-                    if args.scrape:
-                        if episode == season_num["episodes"]:
-                                episode = 1
-                                season = season + 1
-                                os.mkdir("%s/Season %s" %(name, season_str))
-                                season_num = episode_overview[season]
-                    else:
-                        episode = episode + 1
-                    if season < 10: season_str = "0" + str(season)
-                    else: season_str = str(season)
-                    if episode < 10: episode_str = "0" + str(episode)
-                    else: episode_str = str(episode)
-                    if driver == "yt-dlp": os.rename("download/master" + ending, "download/master" + ending)
-                    episode_name = name + " s" + season_str + "e" + episode_str + ending
-                    os.rename("download/master" + ending, name + "/Season " + season_str + "/" + episode_name)
-                    print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
-                    if episode == season_num["episodes"]:
+                if episode == season_num["episodes"]:
                         episode = 1
                         season = season + 1
                         os.mkdir("%s/Season %s" %(name, season_str))
                         season_num = episode_overview[season]
-                    else:
-                        episode = episode + 1
+                else:
+                    episode = episode + 1
+            else:
+                try:
+                    loader = loaders.loaders(name, ending, driver, link, season, episode, verbose)
+                    loader.set_episode(episode)
+                    loader.set_proxy(proxy)
+                    loader.set_season(season)
+                    loader.set_link(link)
+                    loader.downloader()
+                    print("World")
+                    episode = episode + 1
                 except:
                     print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
                     if args.scrape:

@@ -6,6 +6,7 @@
 *.part
 *.ytdl
 *.mp4
+libcurl
 !clannad.txt
 !avatar.txt
 !Harley.txt

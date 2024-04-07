@@ -3,6 +3,7 @@
 ## Dependencies
 This script needs Python 3.10 to run   
 Make sure to have youtube-dl and/or yt-dlp installed   
+(Windows users can use the provided exe files)   
 
 ## Usage
 Add the links to download to the `videos.txt` file.   

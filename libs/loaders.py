@@ -1,68 +1,71 @@
-import os, re
+import os, re, pathlib
+
+from selenium import webdriver
+from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.support.wait import WebDriverWait
 
 class loaders:
-    def __init__(self, name, ending, loader, link="0", file="0", season=1, episode=1, verbose="", proxy=""):
+    def __init__(self, name: str, ending: str, loader: str, link: str = "0", file: str = "0", season: int = 1, episode: int = 1, verbose: str = "", proxy: str = "") -> None:
         self.name = name
         self.season = season
         self.episode = episode
         self.ending = ending
         self.verbose = verbose
-        if link == "0": pass
-        else: self.link = link
-        if file == "0": pass
-        else: self.file = file
+        if link != "0": self.link = link
+        if file != "0": self.file = file
         self.loader = loader
         self.proxy = proxy
     
-    def set_episode(self, episode):
+    def set_episode(self, episode: int):
         self.episode = episode
         #print(self.episode)
 
-    def set_link(self, link):
+    def set_link(self, link: str):
         self.link = link
         #print(self.link)
 
-    def set_proxy(self, proxy):
+    def set_proxy(self, proxy: str):
         self.proxy = proxy
         #print(self.proxy)
 
-    def set_season(self, season):
+    def set_season(self, season: int):
         self.season = season
         #print(self.season)
 
+    def generate_season_string(self) -> str:
+        return f"0{str(self.season)}" if self.season < 10 else str(self.season)
+
+    def generate_episode_string(self) -> str:
+        return f"0{str(self.episode)}" if self.episode < 10 else str(self.episode)
+
     def file_download(self):
-        links_in = open(self.file, "r")
-        print("\x1b[0;30;43m" + "It is advised to only load one season at a time\x1b[0m")
-
-        if not os.path.isdir(self.name):
-            if self.season < 10:
-                season_str = "0" + str(self.season)
-            else:
-                season_str = str(self.season)
-            os.mkdir(self.name)
-            os.mkdir("%s/Season %s" % (self.name, season_str))
-            print("\x1b[6;30;42m" + "Created folder %s/Season %s \x1b[0m" % (self.name, season_str))
-
-        for link in links_in:
-            if "/--/" in link: pass
-            else:
-                self.link_download()
-        links_in.close()
+        with open(self.file, "r") as links_in:
+            print("\x1b[0;30;43m" + "It is advised to only load one season at a time\x1b[0m")
+    
+            if not os.path.isdir(self.name):
+                season_str = self.generate_season_string()
+                os.mkdir(self.name)
+                os.mkdir(f"{self.name}/Season {season_str}")
+                print("\x1b[6;30;42m" + "Created folder %s/Season %s \x1b[0m" % (self.name, season_str))
+    
+            for link in links_in:
+                if "/--/" not in link:
+                    self.link_download()
+            links_in.close()
     
     def downloader(self):
-            os.system('.\%s %s -o download/master%s %s "%s"' % (self.loader, self.proxy, self.ending, self.verbose, self.link))
-            if int(self.season) < 10: season_str = "0" + str(self.season)
-            else: season_str = str(self.season)
-            if int(self.episode) < 10: episode_str = "0" + str(self.episode)
-            else: episode_str = str(self.episode)
-            episode_name = self.name + " s" + season_str + "e" + episode_str + self.ending
-            os.rename("download/master" + self.ending, self.name + "/Season " + season_str + "/" + episode_name)
+            os.system(f'.\{self.loader} {self.proxy} -o download/master{self.ending} {self.verbose} -R infinite "{self.link}"')
+            season_str = self.generate_season_string()
+            episode_str = self.generate_episode_string()
+            episode_name = f"{self.name} s{season_str}e{episode_str}{self.ending}"
+            os.rename(f"download/master{self.ending}", f"{self.name}/Season {season_str}/{episode_name}")
             print("\x1b[6;30;42m" + "Success! Downloaded Episode '%s'\x1b[0m" % (episode_name))
 
 class voe(loaders):
     def link_download(self):
         try:
-            cmd = "curl -o data.txt " + self.link
+            cmd = f"curl -o data.txt {self.link}"
             #print(cmd)
             os.system(cmd)
             data_file = open("data.txt", "r")
@@ -78,23 +81,24 @@ class voe(loaders):
             #print(m3u8_info)
             for item in m3u8_info:
                 if "m3u8" in item:
-                    self.link = re.search("(?P<url>https?://[^\s]+)", item).group("url")
+                    self.link = re.search("(?P<url>https?://[^\s]+)", item)["url"]
+                    print(self.link)
                     print("Loading...")
-                    loaders.downloader(self)
+                    loaders.downloader(self = self)
                     print("Loaded!")
         except:
             print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
             if data_file:
                 data_file.close()
                 os.remove("data.txt")
-            pass
+
     def downloader(self):
         loaders.downloader(self)
 
 class southpark(loaders):
     def link_download(self):
         try:
-            cmd = self.loader  + " " + self.link
+            cmd = f"{self.loader} {self.link}"
             os.system(cmd)
 
             files = os.listdir("./")
@@ -109,22 +113,69 @@ class southpark(loaders):
                     elif "S4" in file:
                         os.rename(file, "part4.mp4")
 
-            cmd = "ffmpeg -f concat -safe 0 -i in.txt -c copy master" + self.ending
+            cmd = f"ffmpeg -f concat -safe 0 -i in.txt -c copy master{self.ending}"
 
             os.system(cmd)
 
-            if self.season < 10:
-                season_str = "0" + str(self.season)
-            else:
-                season_str = str(self.season)
-            if self.episode < 10:
-                episode_str = "0" + str(self.episode)
-            else:
-                episode_str = str(self.episode)
-            episode_name = self.name + " s" + season_str + "e" + episode_str + self.ending
-            os.rename("master" + self.ending, self.name + "/Season " + season_str + "/" + episode_name)
-            print("\x1b[6;30;42m" + "Success Downloaded Episode %s \x1b[0m" % (episode_name))
+            season_str = self.generate_season_string()
+            episode_str = self.generate_episode_string()
+            episode_name = f"{self.name} s{season_str}e{episode_str}{self.ending}"
+            os.rename(f"master{self.ending}", f"{self.name}/Season {season_str}/{episode_name}")
             os.system("rm *.mp4")
         except:
             print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
-            pass
+
+class sto():
+    def __init__(self, link: str) -> None:
+
+        link_list = []
+
+        binary = FirefoxBinary(r"D:\Tor Browser\Browser\firefox.exe")
+        profile = FirefoxProfile(r"D:\Tor Browser\Browser\TorBrowser\Data\Browser\profile.default")
+
+        driver = webdriver.Firefox(profile, binary)
+        driver.get(link)
+
+        if driver.current_url != link:
+            print("Redirected to: %s" % driver.current_url)
+            element = WebDriverWait(driver, 100).until(lambda x: driver.current_url == link)
+        
+        for episode in driver.find_elements(by="tag name", value="a"):
+            try:
+                if "episode-" in episode.get_attribute("href"):
+                    print(episode.get_attribute("href"))
+                    if episode.get_attribute("href") not in link_list:
+                        link_list.append(episode.get_attribute("href"))
+
+            except:
+                pass
+
+        print(link_list)
+        for link in link_list:
+            self.get_stream_url(link)
+
+        driver.quit()
+
+
+    def get_stream_url(self, link: str) -> str:
+        binary = FirefoxBinary(r"D:\Tor Browser\Browser\firefox.exe")
+        profile = FirefoxProfile(r"D:\Tor Browser\Browser\TorBrowser\Data\Browser\profile.default")
+
+        driver = webdriver.Firefox(profile, binary)
+        driver.get(link)
+
+        if driver.current_url != link:
+            print("Redirected to: %s" % driver.current_url)
+            element = WebDriverWait(driver, 100).until(lambda x: driver.current_url == link)
+            driver.get(link)
+
+        for video in driver.find_elements(by="class name", value="watchEpisode"):
+            driver.get(video.get_attribute("href"))
+            break
+
+        open("data.txt", "a").write("/voe/" + driver.current_url + "\n")
+
+        driver.quit()
+
+if __name__ == "__main__":
+    sto("https://s.to/serie/stream/startrek-voyager")

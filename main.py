@@ -51,6 +51,10 @@ def _link_behaviour(link: str, episode: int, season: int, season_str: str, episo
                     season_num = episode_overview[season]
             else:
                 episode = episode + 1
+
+        elif "s.to" in link:
+            loaders.sto(link, episode)
+            return
         else:
             try:
                 loader = loaders.loaders(name, ending, driver, link, season, episode, verbose)

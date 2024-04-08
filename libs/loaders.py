@@ -126,35 +126,60 @@ class southpark(loaders):
             print("\x1b[0;30;41m" + "Error fetching m3u8 info\x1b[0m")
 
 class sto():
-    def __init__(self, link: str) -> None:
+    def __init__(self, link: str, start:int = 1) -> None:
 
-        link_list = []
+        self.name = re.search("https://s\.to/serie/stream/(?P<name>[\w-]+)", link)["name"]
 
-        binary = FirefoxBinary(r"D:\Tor Browser\Browser\firefox.exe")
-        profile = FirefoxProfile(r"D:\Tor Browser\Browser\TorBrowser\Data\Browser\profile.default")
+        if "staffel" in link:
+            self.season = re.search("https://s\.to/serie/stream/[\w-]+(/staffel-(?P<season>\d)){0,}", link)["season"]
+        else:
+            self.season = 1
 
-        driver = webdriver.Firefox(profile, binary)
-        driver.get(link)
+        if os.path.exists("cache-sto.txt"):
+            link_list = open("cache-sto.txt", "r").read().split("\n")
+            if "" in link_list:
+                link_list.remove("")
 
-        if driver.current_url != link:
-            print("Redirected to: %s" % driver.current_url)
-            element = WebDriverWait(driver, 100).until(lambda x: driver.current_url == link)
+        else:
+
+            link_list = []
+
+            binary = FirefoxBinary(r"D:\Tor Browser\Browser\firefox.exe")
+            profile = FirefoxProfile(r"D:\Tor Browser\Browser\TorBrowser\Data\Browser\profile.default")
+
+            driver = webdriver.Firefox(profile, binary)
+
+            wait = WebDriverWait(driver, 20)
+
+            driver.get(link)
+
+            if driver.current_url != link:
+                print(link)
+                print("Redirected to: %s" % driver.current_url)
+                element = WebDriverWait(driver, 100).until(lambda x: driver.current_url == link)
         
-        for episode in driver.find_elements(by="tag name", value="a"):
-            try:
-                if "episode-" in episode.get_attribute("href"):
-                    print(episode.get_attribute("href"))
-                    if episode.get_attribute("href") not in link_list:
-                        link_list.append(episode.get_attribute("href"))
+            for episode in driver.find_elements(by="tag name", value="a"):
+                try:
+                    if "episode-" in episode.get_attribute("href"):
+                        print(episode.get_attribute("href"))
+                        if episode.get_attribute("href") not in link_list:
+                            link_list.append(episode.get_attribute("href"))
 
-            except:
-                pass
+                except:
+                    pass
+
+            driver.quit()
 
         print(link_list)
-        for link in link_list:
-            self.get_stream_url(link)
 
-        driver.quit()
+        cache = open("cache-sto.txt", "w")
+        for item in link_list:
+            cache.write(item + "\n")
+
+        for i in range(start-1, len(link_list)):
+            self.get_stream_url(link_list[i])
+
+        os.remove("cache-sto.txt")
 
 
     def get_stream_url(self, link: str) -> str:
@@ -173,7 +198,7 @@ class sto():
             driver.get(video.get_attribute("href"))
             break
 
-        open("data.txt", "a").write("/voe/" + driver.current_url + "\n")
+        open("{}-{}.txt".format(self.name, self.season), "a").write("/voe/" + driver.current_url + "\n")
 
         driver.quit()
 

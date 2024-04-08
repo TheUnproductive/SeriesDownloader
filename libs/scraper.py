@@ -3,7 +3,7 @@ from tmdbv3api import TMDb, TV, Movie, Season
 class scraper:
     def __init__(self, name) -> None:
         self.tmdb = TMDb()
-        self.tmdb.api_key = "aead5a8921ae3e4a555aa2a78c4fa4f5"
+        self.tmdb.api_key = open("key.txt", "r").read()
 
         self.tv = TV()
 

@@ -19,19 +19,15 @@ class loaders:
     
     def set_episode(self, episode: int):
         self.episode = episode
-        #print(self.episode)
 
     def set_link(self, link: str):
         self.link = link
-        #print(self.link)
 
     def set_proxy(self, proxy: str):
         self.proxy = proxy
-        #print(self.proxy)
 
     def set_season(self, season: int):
         self.season = season
-        #print(self.season)
 
     def generate_season_string(self) -> str:
         return f"0{str(self.season)}" if self.season < 10 else str(self.season)
@@ -66,7 +62,7 @@ class voe(loaders):
     def link_download(self):
         try:
             cmd = f"curl -o data.txt {self.link}"
-            #print(cmd)
+
             os.system(cmd)
             data_file = open("data.txt", "r")
             for line in data_file:
@@ -78,7 +74,7 @@ class voe(loaders):
                     data_file.close()
                     os.remove("data.txt")
                     break
-            #print(m3u8_info)
+
             for item in m3u8_info:
                 if "m3u8" in item:
                     self.link = re.search("(?P<url>https?://[^\s]+)", item)["url"]

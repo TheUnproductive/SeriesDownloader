@@ -52,9 +52,12 @@ def _link_behaviour(link: str, episode: int, season: int, season_str: str, episo
             else:
                 episode = episode + 1
 
+        elif "/-!/" in link:
+             return episode + 1
+
         elif "s.to" in link:
-            loaders.sto(link, episode)
-            return
+            loaders.sto(link.strip("\n"), episode)
+            return episode
         else:
             try:
                 loader = loaders.loaders(name, ending, driver, link, season, episode, verbose)

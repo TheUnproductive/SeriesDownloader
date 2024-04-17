@@ -1,4 +1,4 @@
-import os, re, pathlib
+import os, re
 
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
@@ -152,7 +152,7 @@ class sto():
             if driver.current_url != link:
                 print(link)
                 print("Redirected to: %s" % driver.current_url)
-                element = WebDriverWait(driver, 100).until(lambda x: driver.current_url == link)
+                element = WebDriverWait(driver, 1000).until(lambda x: driver.current_url == link)
         
             for episode in driver.find_elements(by="tag name", value="a"):
                 try:
@@ -174,6 +174,8 @@ class sto():
 
         for i in range(start-1, len(link_list)):
             self.get_stream_url(link_list[i])
+
+        cache.close()
 
         os.remove("cache-sto.txt")
 
@@ -197,6 +199,3 @@ class sto():
         open("{}-{}.txt".format(self.name, self.season), "a").write("/voe/" + driver.current_url + "\n")
 
         driver.quit()
-
-if __name__ == "__main__":
-    sto("https://s.to/serie/stream/startrek-voyager")
